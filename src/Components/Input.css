@@ -1,0 +1,27 @@
+input {
+  display: block;
+  width: 95vw;
+  height: 5vh;
+  margin: auto;
+  margin-bottom: 5px;
+  border: 1px solid #0000009d;
+  border-radius: 5%;
+  font-size: 13px;
+}
+
+p {
+  font-size: 13px;
+  font-weight: bold;
+  display: inline;
+  margin: 0px 3px 5px 5px;
+  padding: 5px;
+  text-align: left;
+}
+
+.fuelType {
+  margin: 0px 50px 0px 5px;
+}
+
+.submit {
+  display: inline;
+}

@@ -6,7 +6,11 @@ import * as serviceWorker from './serviceWorker';
 
 ReactDOM.render(
   <React.StrictMode>
+    
     <App />
+    <script async defer
+      src={"https://maps.googleapis.com/maps/api/js?key=" + process.env.REACT_APP_GOOGLEMAPS_API_KEY + "&callback=initMap"}>
+    </script>
   </React.StrictMode>,
   document.getElementById('root')
 );

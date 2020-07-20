@@ -1,0 +1,42 @@
+@import url(https://fonts.googleapis.com/css?family=Roboto);
+
+body {
+  font-family: 'Roboto', sans-serif;
+  background-color: #f4f7e9;
+}
+
+h1 {
+  font-size: 18px;
+  color: #2b7ddb;
+}
+
+p {
+  font-size: 15px;
+  font-weight: normal;
+  display: block;
+}
+
+.Collapsible {
+  background-color: #2b7ddb;
+  color: white;
+  border: 2px solid #8cb1db;
+  padding: 5px;
+  text-align: left;
+  margin: 1px;
+  border-radius: 2px;
+}
+
+.Collapsible__trigger {
+  padding: 2px;
+}
+
+.Collapsible__contentInner{
+  background-color: #dde7b7;
+  color: black;
+  padding: 3px;
+  border-radius: 5px;
+}
+
+.is-open {
+  color: #f8f520;
+}

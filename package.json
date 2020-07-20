@@ -1,20 +1,27 @@
 {
+  "homepage": "https://dylannguyen2809.github.io/petrol_watch/",
   "name": "petrol_check",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@react-google-maps/api": "^1.9.7",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
+    "homepage": "http://dylannguyen2809.github.io/petrol-watch",
     "react": "^16.13.1",
+    "react-collapsible": "^2.8.0",
     "react-dom": "^16.13.1",
+    "react-google-maps": "^9.4.5",
     "react-scripts": "3.4.1"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -30,5 +37,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "gh-pages": "^3.1.0"
   }
 }
