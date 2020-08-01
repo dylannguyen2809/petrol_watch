@@ -5,6 +5,7 @@ import Input from './Components/Input.js'
 import Stations from './Components/Stations';
 
 class App extends Component{
+  //define the state
   constructor(props) {
     super(props);
     this.state = {
@@ -15,15 +16,16 @@ class App extends Component{
       prices: [],
       mapStart: null,
       mapDest: null,
-      accesstoken: null,
-      apikey: null,
+      accessToken: null,
+      apiKey: null,
       transaction: 0,
       nearbyStations: null
     }
   }
 
-  //retrieve station price data
+  //retrieve station and price data
   async componentDidMount() {
+    //GET request for API credentials using fetch
     await fetch("https://api.onegov.nsw.gov.au/oauth/client_credential/accesstoken?grant_type=client_credentials", {
       "async": true,
       "crossDomain": true,
@@ -32,32 +34,38 @@ class App extends Component{
         "authorization": process.env.REACT_APP_FUEL_AUTH
       }
     })
+      //format request into JS object
       .then(response => response.json())
+      //update state
       .then(json => this.setState({
-        accesstoken: json.access_token,
-        apikey: json.client_id,
+        accessToken: json.access_token,
+        apiKey: json.client_id,
         transaction: this.state.transaction + 1
       }))
       
-      // Simple POST request with a JSON body using fetch
-      fetch("https://api.onegov.nsw.gov.au/FuelPriceCheck/v1/fuel/prices", {
-        "async": true,
-        "crossDomain": true,
-        "method": "GET",
-        "headers": {
-          "authorization": "Bearer " + this.state.accesstoken,
-          "apikey": this.state.apikey,
-          "transactionid": 1,
-          "requesttimestamp": new Date().toLocaleString()
-        }
-      })
-        .then(response => response.json())
-        .then(json => this.setState({
-          stations: json.stations,
-          prices: json.prices
-        }))
+    // GET request for station information using fetch
+    await fetch("https://api.onegov.nsw.gov.au/FuelPriceCheck/v1/fuel/prices", {
+      "async": true,
+      "crossDomain": true,
+      "method": "GET",
+      "headers": {
+        "authorization": "Bearer " + this.state.accessToken,
+        "apikey": this.state.apiKey,
+        "transactionid": 1,
+        "requesttimestamp": new Date().toLocaleString()
+      }
+    })
+      //format request into JS object
+      .then(response => response.json())
+      //update state
+      .then(json => this.setState({
+        stations: json.stations,
+        prices: json.prices
+      }))
+      .then(() => console.log(this.state.stations[0], this.state.prices[0]))
   }
 
+  //handle input (start, destination, fuel type) change
   inputChangedHandler = (event) => {
     let {name, value} = event.target;
     this.setState({
@@ -65,6 +73,7 @@ class App extends Component{
     });
   }
 
+  //handle submit button pressed
   submitHandler = (event) => {
     //update map state
     this.setState({
@@ -73,6 +82,7 @@ class App extends Component{
     });
   }
 
+  //handle station marker clicked or station collapsible selected
   stationSelectedHandler = (stat) => {
     this.setState({
       selected: [{
@@ -84,10 +94,12 @@ class App extends Component{
     })
   }
 
+  //handle nearby stations update
   nearbyStationsHandler = (nearby) => {
     this.setState({nearbyStations: nearby});
   }
 
+  //render components onto the screen, passing in corresponding state values and event handlers
   render(){
     return (
       <div className="App">

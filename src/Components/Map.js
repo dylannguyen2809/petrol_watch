@@ -1,41 +1,10 @@
 //Code adapted from react-google-maps repository from NPM
 //https://www.npmjs.com/package/@react-google-maps/api
 
-import React, { useState, useEffect, useRef } from 'react';
-import { GoogleMap, LoadScript, DirectionsRenderer, Marker, InfoWindow } from '@react-google-maps/api';
+import React, { useState } from 'react';
+import { GoogleMap, LoadScript, Marker, InfoWindow } from '@react-google-maps/api';
+import Directions from './Directions.js'
 import './Map.css';
-//import useTheme from "@material-ui/core/styles/useTheme";
-
-const Directions = props => {
-  //const theme = useTheme();
-  const { origin, destination, waypoints } = props;
-  const count = useRef(0);
-
-  useEffect(() => {
-    count.current = 0;
-  }, [origin, destination, waypoints]);
-
-  const directionsService = new window.google.maps.DirectionsService()
-  directionsService.route({
-          origin,
-          destination,
-          travelMode: 'DRIVING',
-          waypoints,
-        }, function (result, status) {
-          if (status === window.google.maps.DirectionsStatus.OK && count.current === 0) {
-              count.current += 1;
-              props.setDir(result)
-          }
-        });
-
-  return (
-    <>
-      {props.directions && (
-        <DirectionsRenderer directions={props.directions} />
-      )}
-    </>
-  );
-};
 
 export default function Map(props) {
   const [directions, setDirections] = useState();
@@ -44,24 +13,31 @@ export default function Map(props) {
   const [distance, setDistance] = useState();
 
   function directionsChangedHandler(dirs) {
+    console.log(dirs);
     setDirections(dirs);
 
     setAvgLatLng({
       lat: (dirs.routes[0].bounds.Za["j"] + 0.01), 
-      lng: (dirs.routes[0].bounds.Ua["i"])
+      lng: (dirs.routes[0].bounds.Va["i"])
     });
 
     //check stations within bounds
     let tmpStations = [];
     for (var i = 0; i < props.stations.length; i++){
-      if (dirs.routes[0].bounds.Ua["i"] <= props.stations[i.toString()].location.longitude && props.stations[i.toString()].location.longitude <= dirs.routes[0].bounds.Ua["j"]
-        && dirs.routes[0].bounds.Za["i"] <= props.stations[i.toString()].location.latitude && props.stations[i.toString()].location.latitude <= dirs.routes[0].bounds.Za["j"]){
+      //check if latitude and longitude of a station are within bounds
+      if (dirs.routes[0].bounds.Va["i"] <= props.stations[i.toString()].location.longitude && 
+        props.stations[i.toString()].location.longitude <= dirs.routes[0].bounds.Va["j"] && 
+        dirs.routes[0].bounds.Za["i"] <= props.stations[i.toString()].location.latitude && 
+        props.stations[i.toString()].location.latitude <= dirs.routes[0].bounds.Za["j"]){
+        //find corresponding prices for each station by matching station code and fuel type
         for (var j = 0; j < props.prices.length; j++){
-          if (props.prices[j.toString()].stationcode == props.stations[i.toString()].code && props.prices[j.toString()].fueltype == props.fuelType){
+          if (props.prices[j.toString()].stationcode === props.stations[i.toString()].code && 
+          props.prices[j.toString()].fueltype === props.fuelType){
             //calculate journey duration + distance
             var totalDuration = 0;
             var totalDistance = 0;
-            //get total distance and duration in metres and seconds, respectively
+            //get total distance and duration in metres and seconds, respectively,
+            //by adding the distance and duration for each leg of the journey
             for (var k = 0; k < dirs.routes[0].legs.length; k++){
               totalDuration += dirs.routes[0].legs[k].duration.value;
               totalDistance += dirs.routes[0].legs[k].distance.value;
@@ -79,9 +55,12 @@ export default function Map(props) {
         }
       }
     }
-    //sort by price
+    //sort by price using a callback funciton
     tmpStations.sort(function(a, b){
-      return a.price-b.price
+      //returning 1 indicates that b is smaller than a
+      if (a.price > b.price) return 1;
+      //returning -1 indicates that a is smaller than b
+      else return -1;
     })
     props.nearbyStationsHandler(tmpStations);
   }
